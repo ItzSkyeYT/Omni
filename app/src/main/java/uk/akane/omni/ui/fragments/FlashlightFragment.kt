@@ -1,7 +1,12 @@
 package uk.akane.omni.ui.fragments
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
+import android.os.BatteryManager
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraManager
 import android.os.Build
@@ -9,6 +14,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -30,6 +36,7 @@ class FlashlightFragment : BaseFragment() {
     private lateinit var sheetMaterialButton: MaterialButton
     private lateinit var settingsMaterialButton: MaterialButton
     private lateinit var flashlightSlider: Slider
+    private lateinit var batteryTextView: TextView
     private lateinit var cameraManager: CameraManager
     private var keyCameraId: String? = null
     private var maximumFlashlightLevel: Int? = null
@@ -39,6 +46,25 @@ class FlashlightFragment : BaseFragment() {
     private var pastValue: Float = 0f
 
     private var mainActivity: MainActivity? = null
+
+    /**
+     * A torch at full brightness drains a battery fast, so the level belongs on this screen.
+     * ACTION_BATTERY_CHANGED is a sticky broadcast and needs no permission: registering with a
+     * null receiver returns the current value immediately, and the live receiver keeps it fresh.
+     */
+    private val batteryReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            intent?.let { showBatteryLevel(it) }
+        }
+    }
+
+    private fun showBatteryLevel(intent: Intent) {
+        if (!this::batteryTextView.isInitialized) return
+        val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+        val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+        if (level < 0 || scale <= 0) return
+        batteryTextView.text = getString(R.string.battery_percent, level * 100 / scale)
+    }
 
     private lateinit var prefs: SharedPreferences
 
@@ -118,6 +144,7 @@ class FlashlightFragment : BaseFragment() {
         settingsMaterialButton = rootView.findViewById(R.id.settings_btn)!!
 
         flashlightSlider = rootView.findViewById(R.id.flashlight_slider)!!
+        batteryTextView = rootView.findViewById(R.id.battery_text)!!
 
         settingsMaterialButton.setOnClickListener {
             mainActivity!!.startFragment(MainSettingsFragment())
@@ -247,12 +274,29 @@ class FlashlightFragment : BaseFragment() {
             )
     }
 
+    override fun onResume() {
+        super.onResume()
+        // Sticky broadcast: this returns the current battery state straight away.
+        ContextCompat.registerReceiver(
+            requireContext(), batteryReceiver,
+            IntentFilter(Intent.ACTION_BATTERY_CHANGED),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )?.let { showBatteryLevel(it) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        runCatching { requireContext().unregisterReceiver(batteryReceiver) }
+    }
+
     override fun onDestroy() {
         cameraManager.unregisterTorchCallback(torchListener)
         super.onDestroy()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mainActivity?.postComplete()
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
