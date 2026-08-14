@@ -10,6 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import uk.akane.omni.R
 import uk.akane.omni.ui.MainActivity
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
@@ -67,6 +69,32 @@ class SwitchBottomSheet(
      * Both entry points go through MainActivity.showTool so a sheet tap and a swipe produce the
      * same transition, and the direction matches where the target sits in the tool order.
      */
+    /**
+     * Opens fully rather than at the default peek height. The peek is a fraction of the screen,
+     * and a landscape phone is only about 448dp tall, so the peek came out shorter than the
+     * sheet's own content and the tool buttons were cut off by the bottom of the screen. There
+     * is nothing below the fold worth collapsing to here, so collapsing is skipped entirely.
+     */
+    override fun onStart() {
+        super.onStart()
+        val bottomSheetDialog = dialog as? BottomSheetDialog ?: return
+        // The sheet view itself is given a fixed height by the dialog; left alone in landscape
+        // that height is shorter than the content, which is what clipped the tool buttons.
+        bottomSheetDialog.findViewById<View>(
+            com.google.android.material.R.id.design_bottom_sheet
+        )?.let { sheet ->
+            sheet.layoutParams = sheet.layoutParams.apply {
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
+            }
+        }
+        bottomSheetDialog.behavior.apply {
+            skipCollapsed = true
+            isFitToContents = true
+            peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
+    }
+
     private fun setOnClickListener() {
         val targets = listOf(
             compassMaterialButton to MainActivity.Tool.COMPASS,
