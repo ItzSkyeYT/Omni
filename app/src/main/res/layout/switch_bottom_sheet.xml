@@ -12,110 +12,185 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/compass_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:checkable="true"
-        app:backgroundTint="@color/mtrl_btn_bg"
-        app:iconPadding="0dp"
-        app:icon="@drawable/ic_explorer"
-        app:iconSize="28dp"
-        app:iconTint="@color/mtrl_btn_icon"
-        app:iconGravity="textStart"
+    <!-- Buttons are laid out in the same order as swiping moves through the tools, and
+         labelled so that order is legible rather than guessed from icons. -->
+    <LinearLayout
+        android:id="@+id/tool_row"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false"
         app:layout_constraintTop_toBottomOf="@id/drag_handler"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="24dp"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="4dp">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/spirit_leveler_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:checkable="true"
-        app:backgroundTint="@color/mtrl_btn_bg"
-        app:iconPadding="0dp"
-        app:icon="@drawable/ic_straighten"
-        app:iconSize="28dp"
-        app:iconTint="@color/mtrl_btn_icon"
-        app:iconGravity="textStart"
-        app:layout_constraintEnd_toStartOf="@id/barometer_btn"
-        app:layout_constraintTop_toBottomOf="@id/drag_handler"
-        app:layout_constraintStart_toEndOf="@id/compass_btn"
-        />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/compass_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:checkable="true"
+                app:backgroundTint="@color/mtrl_btn_bg"
+                app:iconPadding="0dp"
+                app:icon="@drawable/ic_explorer"
+                app:iconSize="28dp"
+                app:iconTint="@color/mtrl_btn_icon"
+                app:iconGravity="textStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/compass"
+                android:textSize="12sp"
+                android:textColor="?colorOnSurfaceVariant"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/spirit_leveler_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:checkable="true"
+                app:backgroundTint="@color/mtrl_btn_bg"
+                app:iconPadding="0dp"
+                app:icon="@drawable/ic_straighten"
+                app:iconSize="28dp"
+                app:iconTint="@color/mtrl_btn_icon"
+                app:iconGravity="textStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shortcut_short_label_spirit_level"
+                android:textSize="12sp"
+                android:textColor="?colorOnSurfaceVariant"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/ruler_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:checkable="true"
+                app:backgroundTint="@color/mtrl_btn_bg"
+                app:iconPadding="0dp"
+                app:icon="@drawable/ic_ruler"
+                app:iconSize="28dp"
+                app:iconTint="@color/mtrl_btn_icon"
+                app:iconGravity="textStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shortcut_short_label_ruler"
+                android:textSize="12sp"
+                android:textColor="?colorOnSurfaceVariant"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/flashlight_btn"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                android:checkable="true"
+                app:backgroundTint="@color/mtrl_btn_bg"
+                app:iconPadding="0dp"
+                app:icon="@drawable/ic_flashlight_on"
+                app:iconSize="28dp"
+                app:iconTint="@color/mtrl_btn_icon"
+                app:iconGravity="textStart" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shortcut_short_label_flashlight"
+                android:textSize="12sp"
+                android:textColor="?colorOnSurfaceVariant"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/swipe_hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/switch_swipe_hint"
+        android:textSize="13sp"
+        android:textColor="?colorOutline"
+        android:includeFontPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/tool_row"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Reserved slot: the barometer screen does not exist yet. -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/barometer_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:checkable="true"
-        app:backgroundTint="@color/mtrl_btn_bg"
-        app:iconPadding="0dp"
-        app:icon="@drawable/ic_barometer"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:visibility="gone"
-        app:iconSize="28dp"
-        app:iconTint="@color/mtrl_btn_icon"
-        app:iconGravity="textStart"
-        app:layout_constraintTop_toBottomOf="@id/drag_handler"
-        app:layout_constraintStart_toEndOf="@id/spirit_leveler_btn"
-        app:layout_constraintEnd_toStartOf="@id/ruler_btn"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/ruler_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:checkable="true"
-        app:backgroundTint="@color/mtrl_btn_bg"
-        app:iconPadding="0dp"
-        app:icon="@drawable/ic_ruler"
-        app:iconSize="28dp"
-        app:iconTint="@color/mtrl_btn_icon"
-        app:iconGravity="textStart"
-        app:layout_constraintTop_toBottomOf="@id/drag_handler"
-        app:layout_constraintStart_toEndOf="@id/barometer_btn"
-        app:layout_constraintEnd_toStartOf="@id/flashlight_btn"
-        />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/flashlight_btn"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:insetLeft="0dp"
-        android:insetTop="0dp"
-        android:insetRight="0dp"
-        android:insetBottom="0dp"
-        android:checkable="true"
-        app:backgroundTint="@color/mtrl_btn_bg"
-        app:iconPadding="0dp"
-        app:icon="@drawable/ic_flashlight_on"
-        app:iconSize="28dp"
-        app:iconTint="@color/mtrl_btn_icon"
-        app:iconGravity="textStart"
-        app:layout_constraintTop_toBottomOf="@id/drag_handler"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginEnd="16dp"
-        />
+        app:icon="@drawable/ic_barometer"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
