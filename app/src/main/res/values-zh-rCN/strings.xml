@@ -57,4 +57,6 @@
     <string name="flashlight_dialog_title">警告</string>
     <string name="flashlight_dialog_text">将手电筒亮度调至 90% 及更高可能会对手电筒的发光元件造成不可逆转的损毁。如果还是要继续，请按 “好的”。</string>
     <string name="switch_swipe_hint">左右滑动切换工具</string>
+    <string name="settings_upstream">原始应用</string>
+    <string name="settings_upstream_desc">Omni 由 AkaneTan 及贡献者开发。此版本为分支版本。</string>
 </resources>

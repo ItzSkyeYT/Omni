@@ -62,9 +62,16 @@
         <Preference
             android:icon="@drawable/ic_group"
             android:key="author"
-            android:layout="@layout/preference_basic_down"
+            android:layout="@layout/preference_basic_mid"
             android:summary="@string/author"
             android:title="@string/settings_author_name" />
+
+        <Preference
+            android:icon="@drawable/ic_omni"
+            android:key="upstream"
+            android:layout="@layout/preference_basic_down"
+            android:summary="@string/settings_upstream_desc"
+            android:title="@string/settings_upstream" />
 
     </PreferenceCategory>
 
