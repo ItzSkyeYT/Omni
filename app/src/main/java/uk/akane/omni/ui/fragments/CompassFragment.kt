@@ -14,6 +14,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
@@ -71,6 +72,8 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
     private lateinit var longitudeTextView: TextView
     private lateinit var latitudeDescTextView: TextView
     private lateinit var longitudeDescTextView: TextView
+    private lateinit var altitudeTextView: TextView
+    private lateinit var altitudeDescTextView: TextView
     private lateinit var cityTextView: TextView
     private lateinit var geocoder: Geocoder
     private lateinit var notActiveMaterialButton: MaterialButton
@@ -86,6 +89,10 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
     private var hapticFeedback: Boolean = true
     private var trueNorth: Boolean = false
     private var useDms: Boolean = false
+    private var useFeet: Boolean = false
+
+    private var lastCoordinateUpdate: Long = 0
+    private var lastPlaceNameUpdate: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,13 +130,14 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
         hapticFeedback = prefs.getBoolean("haptic_feedback", true)
         trueNorth = prefs.getBoolean("true_north", false)
         useDms = prefs.getBoolean("coordinate", false)
+        useFeet = prefs.getBoolean("altitude_unit", false)
     }
 
     private fun requestLocationUpdates() {
         val providers = locationManager!!.getProviders(true)
         for (provider in providers) {
             try {
-                locationManager!!.requestLocationUpdates(provider, 5000, 0f, this)
+                locationManager!!.requestLocationUpdates(provider, ALTITUDE_INTERVAL_MS, 0f, this)
                 val location = locationManager!!.getLastKnownLocation(provider)
                 if (location != null) {
                     omniViewModel.setLastKnownLocation(location)
@@ -142,7 +150,26 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
         Log.e("CompassFragment", "No valid location provider found")
     }
 
+    /**
+     * Altitude rides on the location fix, so fixes arrive at the altitude cadence and the slower
+     * readouts are throttled off that same stream: coordinates barely move while standing still,
+     * and reverse geocoding is expensive enough that running it per fix wastes battery for a place
+     * name that changes once a walk.
+     */
     private fun updateLocationStatus(location: Location) {
+        val now = SystemClock.elapsedRealtime()
+        updateAltitude(location)
+        if (lastCoordinateUpdate == 0L || now - lastCoordinateUpdate >= COORDINATE_INTERVAL_MS) {
+            lastCoordinateUpdate = now
+            updateCoordinates(location)
+        }
+        if (lastPlaceNameUpdate == 0L || now - lastPlaceNameUpdate >= PLACE_NAME_INTERVAL_MS) {
+            lastPlaceNameUpdate = now
+            updateCity(location)
+        }
+    }
+
+    private fun updateCoordinates(location: Location) {
         if (!useDms) {
             latitudeTextView.text = String.format(Locale.getDefault(), "%.4f", location.latitude)
             longitudeTextView.text = String.format(Locale.getDefault(), "%.4f", location.longitude)
@@ -163,7 +190,39 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
                 longitudeDMS[2].replace(regex, "")
             )
         }
-        updateCity(location)
+    }
+
+    /**
+     * Location.getAltitude() is height above the WGS84 reference ellipsoid, which can differ from
+     * mean sea level by more than 100 metres. Android 14 exposes a properly corrected MSL value, so
+     * prefer that whenever the fix carries one and fall back to the raw ellipsoidal height.
+     */
+    private fun getAltitudeAboveSeaLevel(location: Location): Double? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE && location.hasMslAltitude()) {
+            return location.mslAltitudeMeters
+        }
+        return if (location.hasAltitude()) location.altitude else null
+    }
+
+    private fun updateAltitude(location: Location) {
+        val altitudeInMeters = getAltitudeAboveSeaLevel(location)
+        if (altitudeInMeters == null) {
+            altitudeTextView.visibility = View.GONE
+            altitudeDescTextView.visibility = View.GONE
+            return
+        }
+        altitudeTextView.text = String.format(
+            Locale.getDefault(),
+            "%.0f",
+            if (useFeet) altitudeInMeters * FEET_PER_METRE else altitudeInMeters
+        )
+        altitudeDescTextView.setText(
+            if (useFeet) R.string.altitude_unit_foot else R.string.altitude_unit_meter
+        )
+        if (altitudeTextView.visibility != View.VISIBLE) {
+            altitudeTextView.visibility = View.VISIBLE
+            altitudeDescTextView.visibility = View.VISIBLE
+        }
     }
 
     override fun onResume() {
@@ -199,6 +258,8 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
         longitudeTextView = rootView.findViewById(R.id.longitude)!!
         latitudeDescTextView = rootView.findViewById(R.id.latitude_desc)!!
         longitudeDescTextView = rootView.findViewById(R.id.longitude_desc)!!
+        altitudeTextView = rootView.findViewById(R.id.altitude)!!
+        altitudeDescTextView = rootView.findViewById(R.id.altitude_desc)!!
         cityTextView = rootView.findViewById(R.id.city)!!
         notActiveMaterialButton = rootView.findViewById(R.id.not_available_btn)!!
 
@@ -274,6 +335,7 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -372,6 +434,7 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
 
     override fun onLocationChanged(location: Location) {
         if (!this::latitudeTextView.isInitialized) return
+        omniViewModel.setLastKnownLocation(location)
         updateLocationStatus(location)
         if (longitudeTextView.visibility != View.VISIBLE && !isAnimating) {
             showLongitudeLatitude(false)
@@ -477,6 +540,12 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
     companion object {
         val ENTER_INTERPOLATOR = PathInterpolator(0f, 0f, 0f, 1f)
         val EXIT_INTERPOLATOR = PathInterpolator(0.3f, 0f, 1f, 1f)
+        const val FEET_PER_METRE = 3.28084
+
+        /** Fix cadence: altitude is the fastest-moving readout, so it sets the request interval. */
+        const val ALTITUDE_INTERVAL_MS = 12_000L
+        const val COORDINATE_INTERVAL_MS = 30_000L
+        const val PLACE_NAME_INTERVAL_MS = 60_000L
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
@@ -489,6 +558,16 @@ class CompassFragment : BaseFragment(), SensorEventListener, LocationListener,
             }
             "coordinate" -> {
                 useDms = prefs.getBoolean("coordinate", false)
+                // Re-render now rather than leaving the old format on screen until the next fix.
+                if (this::latitudeTextView.isInitialized) {
+                    omniViewModel.lastKnownLocation.value?.let { updateCoordinates(it) }
+                }
+            }
+            "altitude_unit" -> {
+                useFeet = prefs.getBoolean("altitude_unit", false)
+                if (this::altitudeTextView.isInitialized) {
+                    omniViewModel.lastKnownLocation.value?.let { updateAltitude(it) }
+                }
             }
         }
     }

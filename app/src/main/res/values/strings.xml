@@ -30,6 +30,9 @@
     <string name="accept">Yes</string>
     <string name="perm_dialog_text">Toolbox requires your location data in order to display latitude and longitude. That may requires communications with your location provider\'s server. If you select \"no\", you still can use the basic functionalities of compass.</string>
     <string name="position_default_text" translatable="false">__.____°</string>
+    <string name="altitude_default_text" translatable="false">___</string>
+    <string name="altitude_unit_meter" translatable="false">m</string>
+    <string name="altitude_unit_foot" translatable="false">ft</string>
     <string name="settings">Settings</string>
     <string name="settings_app_name">App name</string>
     <string name="author" translatable="false">123Duo3, AkaneTan</string>
@@ -52,11 +55,17 @@
     <string name="settings_compass_directions">Compass directions</string>
     <string name="settings_compass_directions_desc">Intercardinal directions</string>
     <string name="settings_true_north">Use true north</string>
+    <string name="settings_altitude_unit">Units</string>
+    <string name="settings_altitude_unit_desc">Altitude readout</string>
+    <string name="unit_metric">Metric</string>
+    <string name="unit_imperial">Imperial</string>
     <string name="universal">Universal</string>
     <string name="settings_haptic_feedback">Haptic feedback</string>
     <string name="cm" translatable="false">cm</string>
     <string name="in" translatable="false">in</string>
+    <string name="switch_swipe_hint">Swipe left or right to switch tools</string>
     <string name="flashlight_warn">Higher brightness may cause burns</string>
+    <string name="battery_percent" translatable="false">%1$d%%</string>
     <string name="dms_format" translatable="false">%1$s° %2$s\' %3$s\'\'</string>
     <string name="compass_prompt_title">Notification</string>
     <string name="compass_prompt_desc">Toolbox requires notification permission in order to post notification for the compass QS tile to survive. If you select no, compass QS tile may not work as expected.</string>

@@ -119,7 +119,7 @@
         android:textFontWeight="500"
         android:textColor="?colorOutline"
         android:includeFontPadding="false"
-        android:layout_marginTop="5dp"
+        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintTop_toTopOf="@id/text_indicator"
         app:layout_constraintBottom_toTopOf="@id/longitude_desc"
         app:layout_constraintEnd_toEndOf="parent"
@@ -132,12 +132,26 @@
         android:layout_height="wrap_content"
         android:text="@string/latitude_desc"
         android:textSize="16sp"
-        android:layout_marginBottom="5dp"
         android:textColor="?colorOutline"
         android:textFontWeight="500"
         android:visibility="gone"
         android:includeFontPadding="false"
         app:layout_constraintTop_toBottomOf="@id/latitude_desc"
+        app:layout_constraintBottom_toTopOf="@id/altitude_desc"
+        app:layout_constraintEnd_toEndOf="@id/latitude_desc"
+        />
+
+    <TextView
+        android:id="@+id/altitude_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/altitude_unit_meter"
+        android:textSize="16sp"
+        android:textColor="?colorOutline"
+        android:textFontWeight="500"
+        android:visibility="gone"
+        android:includeFontPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/longitude_desc"
         app:layout_constraintBottom_toBottomOf="@id/text_indicator"
         app:layout_constraintEnd_toEndOf="@id/latitude_desc"
         />
@@ -172,6 +186,22 @@
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/longitude_desc"
         app:layout_constraintTop_toTopOf="@id/longitude_desc"
+        app:layout_constraintEnd_toEndOf="@id/latitude"
+        />
+
+    <TextView
+        android:id="@+id/altitude"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="124"
+        android:text="@string/altitude_default_text"
+        android:includeFontPadding="false"
+        android:textFontWeight="500"
+        android:textColor="?colorOnSurface"
+        android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/altitude_desc"
+        app:layout_constraintTop_toTopOf="@id/altitude_desc"
         app:layout_constraintEnd_toEndOf="@id/latitude"
         />
 
