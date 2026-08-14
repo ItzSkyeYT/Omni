@@ -81,7 +81,12 @@ object ApkInstaller {
                                 if (read < 0) break
                                 output.write(buffer, 0, read)
                                 written += read
-                                onProgress(if (total > 0) written.toFloat() / total else -1f)
+                                // Guarded: a caller that touches a view from this thread would
+                                // otherwise throw here, be caught below, and silently abandon
+                                // the session, which looks exactly like the download hanging.
+                                runCatching {
+                                    onProgress(if (total > 0) written.toFloat() / total else -1f)
+                                }
                             }
                         }
                         session.fsync(output)
