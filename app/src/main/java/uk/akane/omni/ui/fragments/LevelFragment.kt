@@ -1,12 +1,12 @@
 package uk.akane.omni.ui.fragments
 
+import android.content.pm.ActivityInfo
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -21,8 +21,7 @@ import uk.akane.omni.ui.components.SwitchBottomSheet
 import uk.akane.omni.ui.fragments.settings.MainSettingsFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlin.math.asin
-import kotlin.math.sqrt
+import kotlin.math.atan2
 
 
 class LevelFragment : BaseFragment(), SensorEventListener {
@@ -38,6 +37,12 @@ class LevelFragment : BaseFragment(), SensorEventListener {
 
     private lateinit var levelView: SpiritLevelView
 
+    /**
+     * The screen is pinned while this tool is on top. The OS only rotates in 90-degree steps once
+     * you pass roughly 45, and that discrete jump fights the continuous sensor-driven drawing
+     * inside the view. Pinning it and rotating the readout on the canvas instead keeps everything
+     * on one smooth path, and lets the number stay upright at every angle rather than at four.
+     */
     private var doNotHaveSensor: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +60,17 @@ class LevelFragment : BaseFragment(), SensorEventListener {
             sensorManager!!.registerListener(this, rotationVectorSensor, SensorManager.SENSOR_DELAY_FASTEST)
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Hand rotation back so the other tools still turn.
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
     }
 
     override fun onDestroy() {
@@ -95,6 +111,7 @@ class LevelFragment : BaseFragment(), SensorEventListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         ViewCompat.setOnApplyWindowInsetsListener(view) { _, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
 
@@ -125,36 +142,25 @@ class LevelFragment : BaseFragment(), SensorEventListener {
         val rotationMatrix = FloatArray(16)
         SensorManager.getRotationMatrixFromVector(rotationMatrix, rotationVector)
 
-        val displayRotation = ContextCompat.getDisplayOrDefault(requireContext()).rotation
-        val remappedRotationMatrix = remapRotationMatrix(rotationMatrix, displayRotation)
-
+        // No display remap: the screen is pinned, so the display frame and the device frame are
+        // the same thing and the bubble should track tilt in the device's own axes. The reading
+        // itself is remap-invariant anyway, being the magnitude of pitch and roll together.
         val orientationInRadians = FloatArray(3)
-        SensorManager.getOrientation(remappedRotationMatrix, orientationInRadians)
+        SensorManager.getOrientation(rotationMatrix, orientationInRadians)
 
-        val pitchInRadians = Math.toDegrees(orientationInRadians[1].toDouble())
-        val rollInRadians = Math.toDegrees(orientationInRadians[2].toDouble())
-        var balanceFactor: Float = sqrt(
-            remappedRotationMatrix[8] * remappedRotationMatrix[8]
-                    + remappedRotationMatrix[9] * remappedRotationMatrix[9]
-        )
-        balanceFactor = (if (balanceFactor == 0f) 0f else remappedRotationMatrix[8] / balanceFactor)
+        val pitchInDegrees = Math.toDegrees(orientationInRadians[1].toDouble()).toFloat()
+        val rollInDegrees = Math.toDegrees(orientationInRadians[2].toDouble()).toFloat()
 
-        val balance = Math.toDegrees(asin(balanceFactor).toDouble()).toFloat()
+        // Where "up" points, expressed in the device's own axes: the third row of the rotation
+        // matrix is world-up in device coordinates, and its x/y part is that direction projected
+        // onto the screen. atan2 keeps the quadrant, so this is continuous through a full turn.
+        // The previous asin() version could only express -90..90 and lost which way round it was,
+        // which is what all the 180-minus-angle patching downstream was compensating for.
+        val uprightAngle = Math.toDegrees(
+            atan2(rotationMatrix[8].toDouble(), rotationMatrix[9].toDouble())
+        ).toFloat()
 
-        levelView.updatePitchAndRollAndBalance(pitchInRadians.toFloat(), rollInRadians.toFloat(), balance)
-    }
-
-    private fun remapRotationMatrix(rotationMatrix: FloatArray, displayRotation: Int?): FloatArray {
-        val (newX, newY) = when (displayRotation) {
-            Surface.ROTATION_90 -> Pair(SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X)
-            Surface.ROTATION_180 -> Pair(SensorManager.AXIS_MINUS_X, SensorManager.AXIS_MINUS_Y)
-            Surface.ROTATION_270 -> Pair(SensorManager.AXIS_MINUS_Y, SensorManager.AXIS_X)
-            else -> Pair(SensorManager.AXIS_X, SensorManager.AXIS_Y)
-        }
-
-        val remappedRotationMatrix = FloatArray(16)
-        SensorManager.remapCoordinateSystem(rotationMatrix, newX, newY, remappedRotationMatrix)
-        return remappedRotationMatrix
+        levelView.updatePitchAndRollAndBalance(pitchInDegrees, rollInDegrees, uprightAngle)
     }
 
 }
