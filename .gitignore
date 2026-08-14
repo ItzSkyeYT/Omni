@@ -34,3 +34,6 @@ google-services.json
 
 #macOS
 .DS_Store
+
+# Signing credentials, never committed
+keystore.properties

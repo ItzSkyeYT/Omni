@@ -2,4 +2,7 @@
 <resources>
     <dimen name="sprt_btn_marginBottom">16dp</dimen>
     <dimen name="ruler_cv_up">32dp</dimen>
+    <!-- 640dp: about 60 characters of 14sp summary text plus the row's icon, switch and
+         margins. Wider than this and the list stops reading as a column. -->
+    <dimen name="settings_content_max_width">640dp</dimen>
 </resources>

@@ -12,7 +12,7 @@ import uk.akane.omni.R
  * A two-option preference rendered as a segmented button instead of a switch.
  *
  * A switch reads as "off is the absence of the thing", which is wrong for choices where neither
- * option is a default state — metric and imperial are peers, not on and off. The persisted value
+ * option is a default state: metric and imperial are peers, not on and off. The persisted value
  * stays a plain boolean so it is interchangeable with a SwitchPreferenceCompat: false selects the
  * first segment, true selects the second.
  */

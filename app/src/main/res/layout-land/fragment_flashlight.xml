@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The portrait layout stands the slider on end: 500dp long, rotated a quarter turn. A
+     landscape screen is only about 448dp tall, so there it overflowed the screen and sat on
+     top of the warning text. Here the slider lies along the long edge instead, which is both
+     the natural direction to drag in this orientation and a length the screen actually has. -->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?colorSurfaceContainer">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:icon="@drawable/ic_settings"
+        app:iconSize="24dp"
+        app:backgroundTint="?colorSurface"
+        app:iconTint="?colorOnSurface"
+        app:strokeWidth="1dp"
+        app:strokeColor="?colorSurfaceContainer"
+        android:layout_marginStart="24dp"
+        android:layout_marginBottom="@dimen/sprt_btn_marginBottom"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sheet_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/settings_btn"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:icon="@drawable/ic_flashlight_on"
+        app:iconSize="24dp"
+        app:backgroundTint="?colorSurface"
+        app:iconTint="?colorOnSurface"
+        app:strokeWidth="1dp"
+        app:strokeColor="?colorSurfaceContainer"
+        android:layout_marginEnd="24dp"
+        />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/battery_ind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?materialCardViewFilledStyle"
+        app:cardBackgroundColor="?colorSurface"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
+
+            <ImageView
+                android:id="@+id/battery_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_battery"
+                android:importantForAccessibility="no"
+                android:layout_marginEnd="6dp"
+                app:tint="?colorOnSurface"
+                />
+
+            <TextView
+                android:id="@+id/battery_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textFontWeight="500"
+                android:textColor="?colorOnSurface"
+                android:includeFontPadding="false"
+                tools:text="87%"
+                />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/warn_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/flashlight_warn"
+        android:textSize="18sp"
+        android:textColor="?colorOutline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/settings_btn"
+        android:layout_marginBottom="16dp"
+        />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/flashlight_slider"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.Slider.Legacy"
+        app:trackHeight="160dp"
+        app:thumbRadius="80dp"
+        app:labelBehavior="gone"
+        app:thumbElevation="0dp"
+        app:trackColorInactive="?colorSurfaceContainerLow"
+        app:trackColorActive="?colorPrimary"
+        app:thumbColor="?colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/battery_ind"
+        app:layout_constraintBottom_toTopOf="@id/warn_text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
