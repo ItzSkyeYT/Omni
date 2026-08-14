@@ -6,10 +6,10 @@
 > Akane Foundation contributors, and is maintained upstream at
 > **[FoedusProgramme/Omni](https://github.com/FoedusProgramme/Omni)**.
 >
-> Everything that makes this app good — the Material 3 design, the hand-drawn compass and
-> spirit level views, the physical-unit ruler, the variable-strength flashlight, and the
-> decision to keep it small and free of bloat — is their work. This fork only adds an
-> altitude readout and some landscape layouts on top of an app that was already excellent.
+> Everything that makes this app good is their work: the Material 3 design, the hand-drawn
+> compass and spirit level views, the physical-unit ruler, the variable-strength flashlight,
+> and the decision to keep it small and free of bloat. This fork only adds an altitude
+> readout and some landscape layouts on top of an app that was already excellent.
 >
 > If you are looking for Omni itself, get it from upstream:
 > [GitHub releases](https://github.com/FoedusProgramme/Omni/releases/latest) ·
@@ -66,7 +66,7 @@ release install of Omni rather than replacing it.
 
 ## License
 
-GNU General Public License v3.0, unchanged from upstream — see [LICENSE](LICENSE).
+GNU General Public License v3.0, unchanged from upstream. See [LICENSE](LICENSE).
 
 Copyright for the original work remains with its authors. This fork is redistributed under
 the same licence, as the GPL requires and as it deserves.

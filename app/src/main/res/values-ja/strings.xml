@@ -17,9 +17,7 @@
   <string name="accept">はい</string>
   <string name="perm_dialog_text">Omni は経緯経度を表示するために位置情報が必要です。そのため位置情報の提供サーバーとの通信が必要になる場合があります。｢いいえ｣を選択をしても Omni Compass の基本機能は使用できます。</string>
   <string name="settings">設定</string>
-  <string name="settings_app_name">アプリ名</string>
   <string name="settings_author_name">作者</string>
-  <string name="version">バージョン</string>
   <string name="settings_unknown_version">不明なバージョン</string>
   <string name="warning_dialog_title">警告</string>
   <string name="warning_dialog_text">使用しているデバイスには利用可能な回転ベクトルセンサーが搭載されていないようです。Omni のコンパス機能は無効になります。ただし、位置情報の機能は使用可能です。</string>

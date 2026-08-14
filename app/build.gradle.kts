@@ -1,5 +1,14 @@
 import com.android.build.gradle.tasks.PackageAndroidArtifact
 
+import java.util.Properties
+
+// Signing credentials live in keystore.properties, which is gitignored. Without it the build
+// still works and simply falls back to the default debug key, so a fresh clone is not blocked.
+val keystoreProps = Properties().apply {
+    val file = rootProject.file("keystore.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -17,6 +26,22 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        // Android keys app-update identity on the signing certificate, so debug and release
+        // share one keystore. Otherwise a release build could never install over an existing
+        // debug install and every update would mean uninstalling first, losing settings.
+        val configure: com.android.build.api.dsl.ApkSigningConfig.() -> Unit = {
+            if (keystoreProps.containsKey("storeFile")) {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+        getByName("debug", configure)
+        create("release", configure)
+    }
+
     defaultConfig {
         // Shipped under my own namespace so this fork is a distinct app rather than something
         // masquerading as the original, and so both can be installed at once. The Kotlin
@@ -26,14 +51,15 @@ android {
         applicationId = "dev.skye.omni"
         minSdk = 26
         targetSdk = 36
-        versionCode = 6
-        versionName = "1.5"
+        versionCode = 7
+        versionName = "1.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -42,7 +68,6 @@ android {
             )
         }
         debug {
-            applicationIdSuffix = ".debug"
         }
     }
 

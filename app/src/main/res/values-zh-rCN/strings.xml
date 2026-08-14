@@ -17,16 +17,13 @@
     <string name="decline">不要</string>
     <string name="accept">好的</string>
     <string name="settings">设置</string>
-    <string name="settings_app_name">应用名称</string>
     <string name="settings_author_name">作者</string>
-    <string name="version">版本</string>
     <string name="settings_unknown_version">未知版本</string>
     <string name="warning_dialog_title">警告</string>
     <string name="warning_dialog_text">看起来您的设备没有可用的旋转向量传感器。工具箱的指南针功能将被禁用。 但是，您仍然可以使用位置功能。</string>
     <string name="dismiss">关闭</string>
     <string name="delimiter">""</string>
     <string name="location_format">%9$s%7$s%8$s%5$s%6$s%3$s%4$s%1$s%2$s</string>
-    <string name="not_supported">不支持</string>
     <string name="compass">指南针</string>
     <string name="compass_tile_notification_channel">指南针通知</string>
     <string name="compass_notification_title">指南针正在运行</string>
@@ -34,8 +31,6 @@
     <string name="about">关于</string>
     <string name="settings_coordinate_format">坐标格式</string>
     <string name="settings_coordinate_format_desc">度，分，秒 (DMS)</string>
-    <string name="settings_compass_directions">指南针方向</string>
-    <string name="settings_compass_directions_desc">次级方位</string>
     <string name="settings_true_north">使用真北</string>
     <string name="settings_altitude_unit">单位</string>
     <string name="settings_altitude_unit_desc">海拔显示</string>
