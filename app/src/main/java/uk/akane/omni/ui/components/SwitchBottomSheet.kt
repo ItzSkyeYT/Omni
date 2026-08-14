@@ -8,12 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.commit
 import uk.akane.omni.R
-import uk.akane.omni.ui.fragments.CompassFragment
-import uk.akane.omni.ui.fragments.FlashlightFragment
-import uk.akane.omni.ui.fragments.LevelFragment
-import uk.akane.omni.ui.fragments.RulerFragment
+import uk.akane.omni.ui.MainActivity
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.color.MaterialColors
@@ -67,44 +63,24 @@ class SwitchBottomSheet(
         return rootView
     }
 
+    /**
+     * Both entry points go through MainActivity.showTool so a sheet tap and a swipe produce the
+     * same transition, and the direction matches where the target sits in the tool order.
+     */
     private fun setOnClickListener() {
-        compassMaterialButton.setOnClickListener {
-            if (targetMaterialButton != compassMaterialButton) {
-                val fm = requireActivity().supportFragmentManager
-                fm.commit {
-                    hide(fm.fragments.last())
-                    replace(R.id.container, CompassFragment())
-                }
-                dismiss()
-            }
-        }
-        spiritLevelMaterialButton.setOnClickListener {
-            if (targetMaterialButton != spiritLevelMaterialButton) {
-                val fm = requireActivity().supportFragmentManager
-                fm.commit {
-                    hide(fm.fragments.last())
-                    replace(R.id.container, LevelFragment())
-                }
-                dismiss()
-            }
-        }
-        rulerMaterialButton.setOnClickListener {
-            if (targetMaterialButton != rulerMaterialButton) {
-                val fm = requireActivity().supportFragmentManager
-                fm.commit {
-                    hide(fm.fragments.last())
-                    replace(R.id.container, RulerFragment())
-                }
-                dismiss()
-            }
-        }
-        flashlightMaterialButton.setOnClickListener {
-            if (targetMaterialButton != flashlightMaterialButton) {
-                val fm = requireActivity().supportFragmentManager
-                fm.commit {
-                    hide(fm.fragments.last())
-                    replace(R.id.container, FlashlightFragment())
-                }
+        val targets = listOf(
+            compassMaterialButton to MainActivity.Tool.COMPASS,
+            spiritLevelMaterialButton to MainActivity.Tool.SPIRIT_LEVEL,
+            rulerMaterialButton to MainActivity.Tool.RULER,
+            flashlightMaterialButton to MainActivity.Tool.FLASHLIGHT
+        )
+        for ((button, tool) in targets) {
+            button.setOnClickListener {
+                if (button === targetMaterialButton) return@setOnClickListener
+                val activity = requireActivity() as MainActivity
+                val current = activity.currentTool()
+                val direction = if (current == null || tool.ordinal >= current.ordinal) 1 else -1
+                activity.showTool(tool, direction)
                 dismiss()
             }
         }
