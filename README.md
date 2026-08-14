@@ -53,16 +53,22 @@ the GPL asks.
 
 ## Installation
 
-This fork is not distributed anywhere. Build it yourself, or install the original from
-[IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/uk.akane.omni).
+Grab the APK from [releases](https://github.com/ItzSkyeYT/Omni/releases/latest), or build it
+yourself. Once installed it checks for its own updates under Settings > About.
+
+Android will show a Play Protect "app scan recommended" prompt on install, because the app
+does not come from a store. That is expected for any sideloaded app and cannot be suppressed
+from inside it. [Obtainium](https://github.com/ImranR98/Obtainium) avoids the prompt and
+tracks this repository's releases automatically.
 
 ## Building
 
 You will need the latest [Android Studio](https://developer.android.com/studio) and a fast
 network connection, then `./gradlew assembleDebug`.
 
-The debug build carries an `applicationIdSuffix` of `.debug`, so it installs alongside a
-release install of Omni rather than replacing it.
+Debug and release share one signing key, read from a gitignored `keystore.properties`, so a
+release installs in place over a debug build. Android ties update identity to the signing
+certificate, so a mismatch can only be resolved by uninstalling.
 
 ## License
 

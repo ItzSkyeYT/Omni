@@ -51,8 +51,8 @@ android {
         applicationId = "dev.skye.omni"
         minSdk = 26
         targetSdk = 36
-        versionCode = 7
-        versionName = "1.6"
+        versionCode = 11
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
