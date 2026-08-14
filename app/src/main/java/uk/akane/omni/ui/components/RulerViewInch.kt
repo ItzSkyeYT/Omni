@@ -1,6 +1,7 @@
 package uk.akane.omni.ui.components
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -43,47 +44,57 @@ class RulerViewInch @JvmOverloads constructor(
     private val inchTextInterval: Int = 10 // Show text for every 10 intervals (1 inch)
     private val topPadding: Float = 24f.dpToPx(context)
 
+    /** Mirrors [RulerView]: landscape measures along the long edge with upright numbers. */
+    private val isHorizontal: Boolean
+        get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         val width = width.toFloat()
         val height = height.toFloat()
+        val axisLength = if (isHorizontal) width else height
+        val depth = if (isHorizontal) height else width
 
-        val numInches = (height - topPadding) / inchToPx
+        val numInches = (axisLength - topPadding) / inchToPx
         val numIntervals = numInches * 10
 
-        val longLineLength = width * 0.53f
-        val midLineLength = width * 0.43f
-        val shortLineLength = width * 0.34f
+        val longLineLength = depth * 0.53f
+        val midLineLength = depth * 0.43f
+        val shortLineLength = depth * 0.34f
 
         for (i in 0..numIntervals.toInt()) {
-            val y = topPadding + i * inchInterval
+            val pos = topPadding + i * inchInterval
+            val tick = { length: Float, paint: Paint ->
+                if (isHorizontal) canvas.drawLine(pos, 0f, pos, length, paint)
+                else canvas.drawLine(0f, pos, length, pos, paint)
+            }
             when {
                 i % inchTextInterval == 0 -> {
                     // Draw longer lines and numbers for every inch
-                    canvas.drawLine(0f, y, longLineLength, y, paintMain)
+                    tick(longLineLength, paintMain)
                     val text = (i / inchTextInterval).toString()
                     val textWidth = paintText.measureText(text)
                     val textHeight = paintText.descent() - paintText.ascent()
-                    val textX = (width - longLineLength) / 2 + longLineLength - textWidth / 2
-
-                    val textY = y + textHeight / 3
                     paintText.color = MaterialColors.getColor(this@RulerViewInch,
                         if ((i / inchTextInterval) % 12 == 0)
                             com.google.android.material.R.attr.colorOnSurface
                         else
                             com.google.android.material.R.attr.colorOutline
                     )
-                    canvas.drawText(text, textX, textY, paintText)
+                    if (isHorizontal) {
+                        canvas.drawText(text, pos - textWidth / 2,
+                            (depth - longLineLength) / 2 + longLineLength + textHeight / 3, paintText)
+                    } else {
+                        canvas.drawText(text,
+                            (depth - longLineLength) / 2 + longLineLength - textWidth / 2,
+                            pos + textHeight / 3, paintText)
+                    }
                 }
-                i % 5 == 0 -> {
-                    // Draw medium lines for every 5 intervals (0.5 inch)
-                    canvas.drawLine(0f, y, midLineLength, y, paintSide)
-                }
-                else -> {
-                    // Draw shorter lines for other intervals
-                    canvas.drawLine(0f, y, shortLineLength, y, paintSide)
-                }
+                // Draw medium lines for every 5 intervals (0.5 inch)
+                i % 5 == 0 -> tick(midLineLength, paintSide)
+                // Draw shorter lines for other intervals
+                else -> tick(shortLineLength, paintSide)
             }
         }
     }

@@ -1,6 +1,7 @@
 package uk.akane.omni.ui.components
 
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
@@ -41,44 +42,57 @@ class RulerView @JvmOverloads constructor(
     private val mmToPx: Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_MM, 1f, resources.displayMetrics)
     private val topPadding: Float = 24f.dpToPx(context)
 
+    /**
+     * Landscape measures along the long edge, so the same ruler is drawn with its axes swapped:
+     * ticks rise from the bottom edge and the numbers sit upright above them rather than beside.
+     */
+    private val isHorizontal: Boolean
+        get() = resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         val width = width.toFloat()
         val height = height.toFloat()
+        val axisLength = if (isHorizontal) width else height
+        val depth = if (isHorizontal) height else width
 
-        val numDivisions = ((height - topPadding) / mmToPx).toInt()
-        val longLineLength = width * 0.53f
-        val midLineLength = width * 0.43f
-        val shortLineLength = width * 0.34f
+        val numDivisions = ((axisLength - topPadding) / mmToPx).toInt()
+        val longLineLength = depth * 0.53f
+        val midLineLength = depth * 0.43f
+        val shortLineLength = depth * 0.34f
 
         for (i in 0..numDivisions) {
-            val y = topPadding + i * mmToPx
+            val pos = topPadding + i * mmToPx
+            val tick = { length: Float, paint: Paint ->
+                if (isHorizontal) canvas.drawLine(pos, depth - length, pos, depth, paint)
+                else canvas.drawLine(depth - length, pos, depth, pos, paint)
+            }
             when {
                 i % 10 == 0 -> {
                     // Draw longer lines and numbers for every 10mm (1cm)
-                    canvas.drawLine(width - longLineLength, y, width, y, paintMain)
+                    tick(longLineLength, paintMain)
                     val text = (i / 10).toString()
                     val textWidth = paintText.measureText(text)
                     val textHeight = paintText.descent() - paintText.ascent()
-                    val textX = (width - longLineLength) / 2 - textWidth / 2
-                    val textY = y + textHeight / 3
                     paintText.color = MaterialColors.getColor(this@RulerView,
                         if ((i / 10) % 5 == 0)
                             com.google.android.material.R.attr.colorOnSurface
                         else
                             com.google.android.material.R.attr.colorOutline
                     )
-                    canvas.drawText(text, textX, textY, paintText)
+                    if (isHorizontal) {
+                        canvas.drawText(text, pos - textWidth / 2,
+                            (depth - longLineLength) / 2 + textHeight / 3, paintText)
+                    } else {
+                        canvas.drawText(text, (depth - longLineLength) / 2 - textWidth / 2,
+                            pos + textHeight / 3, paintText)
+                    }
                 }
-                i % 5 == 0 -> {
-                    // Draw medium lines for every 5mm (0.5cm)
-                    canvas.drawLine(width - midLineLength, y, width, y, paintSide)
-                }
-                else -> {
-                    // Draw shorter lines for other millimeters
-                    canvas.drawLine(width - shortLineLength, y, width, y, paintSide)
-                }
+                // Draw medium lines for every 5mm (0.5cm)
+                i % 5 == 0 -> tick(midLineLength, paintSide)
+                // Draw shorter lines for other millimeters
+                else -> tick(shortLineLength, paintSide)
             }
         }
     }
