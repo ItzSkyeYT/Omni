@@ -1,6 +1,8 @@
 package uk.akane.omni.ui.fragments.settings
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -89,12 +91,23 @@ class MainSettingsTopFragment : BasePreferenceFragment() {
 
         val preference = updatePreference ?: return
         preference.isEnabled = false
+        // Progress arrives on the download thread. A Preference summary change notifies the
+        // RecyclerView adapter, which is main-thread only, so it has to hop across; and it is
+        // only worth doing when the whole percentage actually changes rather than per buffer.
+        val mainHandler = Handler(Looper.getMainLooper())
+        var lastPercent = -1
         viewLifecycleOwner.lifecycleScope.launch {
             val error = withContext(Dispatchers.IO) {
                 ApkInstaller.downloadAndInstall(requireContext().applicationContext, release) { progress ->
-                    if (progress >= 0f) {
-                        val percent = (progress * 100).toInt()
-                        preference.summary = getString(R.string.update_downloading, percent)
+                    if (progress < 0f) return@downloadAndInstall
+                    val percent = (progress * 100).toInt()
+                    if (percent != lastPercent) {
+                        lastPercent = percent
+                        mainHandler.post {
+                            if (isAdded) {
+                                preference.summary = getString(R.string.update_downloading, percent)
+                            }
+                        }
                     }
                 }
             }
