@@ -37,6 +37,8 @@
     <string name="settings_app_name">App name</string>
     <string name="author" translatable="false">123Duo3, AkaneTan</string>
     <string name="settings_author_name">Author</string>
+    <string name="settings_upstream">Original app</string>
+    <string name="settings_upstream_desc">Omni by AkaneTan and contributors. This build is a fork.</string>
     <string name="version">Version</string>
     <string name="settings_unknown_version">Unknown version</string>
     <string name="warning_dialog_title">Warning</string>
