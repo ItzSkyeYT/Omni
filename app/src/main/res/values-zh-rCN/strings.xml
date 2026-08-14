@@ -37,6 +37,10 @@
     <string name="settings_compass_directions">指南针方向</string>
     <string name="settings_compass_directions_desc">次级方位</string>
     <string name="settings_true_north">使用真北</string>
+    <string name="settings_altitude_unit">单位</string>
+    <string name="settings_altitude_unit_desc">海拔显示</string>
+    <string name="unit_metric">公制</string>
+    <string name="unit_imperial">英制</string>
     <string name="universal">通用</string>
     <string name="settings_haptic_feedback">震动反馈</string>
     <string name="flashlight_warn">高亮度可能造成灼伤。</string>
@@ -52,4 +56,5 @@
     <string name="shortcut_long_label_flashlight">手电筒</string>
     <string name="flashlight_dialog_title">警告</string>
     <string name="flashlight_dialog_text">将手电筒亮度调至 90% 及更高可能会对手电筒的发光元件造成不可逆转的损毁。如果还是要继续，请按 “好的”。</string>
+    <string name="switch_swipe_hint">左右滑动切换工具</string>
 </resources>

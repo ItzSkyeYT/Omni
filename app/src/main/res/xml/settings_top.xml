@@ -19,8 +19,16 @@
             android:icon="@drawable/ic_true_north"
             android:key="true_north"
             android:title="@string/settings_true_north"
-            android:layout="@layout/preference_basic_down"
+            android:layout="@layout/preference_basic_mid"
             android:widgetLayout="@layout/preference_switch_widget"
+            />
+
+        <uk.akane.omni.ui.components.SegmentedPreference
+            android:icon="@drawable/ic_barometer"
+            android:key="altitude_unit"
+            android:title="@string/settings_altitude_unit"
+            android:summary="@string/settings_altitude_unit_desc"
+            android:layout="@layout/preference_segmented_down"
             />
 
     </PreferenceCategory>
