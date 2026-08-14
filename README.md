@@ -40,6 +40,14 @@ Added in this fork:
 - **Swipe left and right** to move between tools
 - Spirit level smoothing, and a readout that stays upright at any angle
 
+## About this fork
+
+Maintained by **[ItzSkyeYT](https://github.com/ItzSkyeYT)**. It tracks upstream and exists to
+scratch a few personal itches, mainly wanting altitude on the compass while out walking.
+Changes are listed above and each carries its reasoning in the commit message.
+
+Modifications are marked as such in the app's About screen, as the GPL asks.
+
 ## Installation
 
 This fork is not distributed anywhere. Build it yourself, or install the original from

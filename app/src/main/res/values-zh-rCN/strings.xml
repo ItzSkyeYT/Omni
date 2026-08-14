@@ -59,4 +59,5 @@
     <string name="switch_swipe_hint">左右滑动切换工具</string>
     <string name="settings_upstream">原始应用</string>
     <string name="settings_upstream_desc">Omni 由 AkaneTan 及贡献者开发。此版本为分支版本。</string>
+    <string name="settings_fork">此分支</string>
 </resources>
