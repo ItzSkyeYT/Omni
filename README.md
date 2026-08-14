@@ -46,7 +46,10 @@ Maintained by **[ItzSkyeYT](https://github.com/ItzSkyeYT)**. It tracks upstream 
 scratch a few personal itches, mainly wanting altitude on the compass while out walking.
 Changes are listed above and each carries its reasoning in the commit message.
 
-Modifications are marked as such in the app's About screen, as the GPL asks.
+It ships under its own application id, `dev.skye.omni`, so it installs alongside a real Omni
+rather than replacing or impersonating it, and its launcher icon is inverted so the two are
+distinguishable at a glance. Modifications are marked as such in the app's About screen, as
+the GPL asks.
 
 ## Installation
 

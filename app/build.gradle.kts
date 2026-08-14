@@ -18,11 +18,16 @@ android {
     }
 
     defaultConfig {
-        applicationId = "uk.akane.omni"
+        // Shipped under my own namespace so this fork is a distinct app rather than something
+        // masquerading as the original, and so both can be installed at once. The Kotlin
+        // namespace above stays as upstream has it: applicationId and namespace are separate
+        // for exactly this reason, and renaming the source package would conflict on every
+        // file the next time upstream is merged.
+        applicationId = "dev.skye.omni"
         minSdk = 26
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.4"
+        versionCode = 6
+        versionName = "1.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
