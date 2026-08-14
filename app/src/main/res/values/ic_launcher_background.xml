@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Inverted against upstream so the fork is distinguishable at a glance in the
+     launcher when both are installed. -->
 <resources>
-    <color name="ic_launcher_background">#F6FBF3</color>
+    <color name="ic_launcher_background">#181D18</color>
 </resources>
