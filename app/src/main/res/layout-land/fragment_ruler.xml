@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?colorSurfaceContainer">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/band_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.38" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/band_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.62" />
+
+    <!-- Both scales run edge to edge along the long axis with their tick lines flush
+         against the physical screen edge, which is the edge laid against the object.
+         Inches draw ticks downward from the top of the box and centimetres upward from
+         the bottom, so inches belong on top and centimetres underneath. -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/in_ruler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/band_top"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <uk.akane.omni.ui.components.RulerViewInch
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_layout_2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/band_bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <uk.akane.omni.ui.components.RulerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/sheet_btn"
+        app:layout_constraintTop_toTopOf="@id/band_top"
+        app:layout_constraintBottom_toBottomOf="@id/band_bottom"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:icon="@drawable/ic_settings"
+        app:iconSize="24dp"
+        app:backgroundTint="?colorSurface"
+        app:iconTint="?colorOnSurface"
+        app:strokeWidth="1dp"
+        app:strokeColor="?colorSurfaceContainer"
+        android:layout_marginEnd="12dp"
+        />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/sheet_btn"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+        android:insetTop="0dp"
+        app:layout_constraintStart_toEndOf="@id/settings_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/settings_btn"
+        app:layout_constraintBottom_toBottomOf="@id/settings_btn"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:icon="@drawable/ic_straighten"
+        app:iconSize="24dp"
+        app:backgroundTint="?colorSurface"
+        app:iconTint="?colorOnSurface"
+        app:strokeWidth="1dp"
+        app:strokeColor="?colorSurfaceContainer"
+        />
+
+    <!-- Inches label at the start of the band, arrow pointing up at the inch scale;
+         centimetres at the end, arrow pointing down at the centimetre scale. -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/in_ind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?materialCardViewFilledStyle"
+        app:cardBackgroundColor="?colorTertiaryContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/settings_btn"
+        app:layout_constraintBottom_toBottomOf="@id/settings_btn"
+        android:layout_marginStart="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/in"
+                android:textSize="22sp"
+                android:textColor="?colorOnTertiaryContainer"
+                android:includeFontPadding="false"
+                android:layout_marginStart="12dp"
+                tools:ignore="HardcodedText"
+                />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:rotation="90"
+                android:importantForAccessibility="no"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="10dp"
+                app:tint="?colorOnTertiaryContainer"
+                />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cm_ind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?materialCardViewFilledStyle"
+        app:cardBackgroundColor="?colorPrimaryContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/settings_btn"
+        app:layout_constraintBottom_toBottomOf="@id/settings_btn"
+        android:layout_marginEnd="24dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_back"
+                android:rotation="270"
+                android:importantForAccessibility="no"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="6dp"
+                app:tint="?colorOnPrimaryContainer"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cm"
+                android:textSize="22sp"
+                android:textColor="?colorOnPrimaryContainer"
+                android:includeFontPadding="false"
+                android:layout_marginEnd="12dp"
+                />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
