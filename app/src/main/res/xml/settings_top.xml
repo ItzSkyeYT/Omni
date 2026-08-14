@@ -69,9 +69,16 @@
         <Preference
             android:icon="@drawable/ic_omni"
             android:key="upstream"
-            android:layout="@layout/preference_basic_down"
+            android:layout="@layout/preference_basic_mid"
             android:summary="@string/settings_upstream_desc"
             android:title="@string/settings_upstream" />
+
+        <Preference
+            android:icon="@drawable/ic_conversion_path"
+            android:key="fork"
+            android:layout="@layout/preference_basic_down"
+            android:summary="@string/settings_fork_desc"
+            android:title="@string/settings_fork" />
 
     </PreferenceCategory>
 
